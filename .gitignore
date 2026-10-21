@@ -1,6 +1,7 @@
 # Only the published site is versioned
 /*
 !/.gitignore
+!/CNAME
 !/index.html
 !/styles.css
 !/script.js
