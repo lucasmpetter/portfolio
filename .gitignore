@@ -1,0 +1,18 @@
+# Only the published site is versioned
+/*
+!/.gitignore
+!/index.html
+!/styles.css
+!/script.js
+!/assets/
+/assets/*
+!/assets/favicon.svg
+!/assets/favicon.png
+!/assets/og.png
+!/assets/cursor2-20.svg
+!/assets/assinatura-rosa.svg
+!/assets/imagem-rosa.png
+!/assets/imagem-amarela.png
+!/assets/imagem-azul.png
+!/assets/proj-arandudf.png
+!/assets/proj-aritmatch.png

@@ -1,0 +1,231 @@
+(() => {
+  const T = {
+    pt: {
+      n0: 'Sobre', n1: 'Projetos', n2: 'Experiência', n3: 'Contato',
+      h1: 'Web design, landing pages, e engenheiro de software',
+      l0: 'Quem sou eu', l1: 'arandu&aritmatch', l2: 'Acadêmico e profissional', l3: 'Emails e social',
+      soon: 'Em breve', up: 'Voltar ao início',
+      exp: [['Profissional', 'CTO & Co-founder', 'Arandu Intelligence Systems'], ['Profissional', 'Criador do Aritmatch', 'Arandu'], ['Profissional', 'Web designer', 'Landing pages'], ['Acadêmico', 'Engenharia de Software', 'Uniceplac · Gama']],
+      p: [
+        [['Me chamo Lucas, sou engenheiro de software, mas gosto mesmo é de ', 0], ['web design', 1], [', criação de landing pages e one-paged sites.', 0]],
+        [['Sou extremamente curioso, e talvez por isso eu tenha escolhido mexer com a internet (ela é ', 0], ['enorme', 1], [').', 0]],
+        [['Eu me descreveria como: ', 0], ['metódico', 1], [', ', 0], ['excêntrico', 1], [', corajoso, determinado, confiante, meio indeciso. ', 0], ['Não me julgue pelas minhas perdas', 1], [', porque elas são bem poucas.', 0]]
+      ]
+    },
+    en: {
+      n0: 'About', n1: 'Projects', n2: 'Experience', n3: 'Contact',
+      h1: 'Web design, landing pages, and software engineer',
+      l0: 'Who I am', l1: 'arandu&aritmatch', l2: 'Academic and professional', l3: 'Emails and social',
+      soon: 'Coming soon', up: 'Back to top',
+      exp: [['Professional', 'CTO & Co-founder', 'Arandu Intelligence Systems'], ['Professional', 'Creator of Aritmatch', 'Arandu'], ['Professional', 'Web designer', 'Landing pages'], ['Academic', 'Software Engineering', 'Uniceplac · Gama']],
+      p: [
+        [["I'm Lucas, a software engineer, but what I really love is ", 0], ['web design', 1], [', building landing pages and one-page sites.', 0]],
+        [["I'm extremely curious, and maybe that's why I chose to work with the internet (it's ", 0], ['huge', 1], [').', 0]],
+        [['I would describe myself as: ', 0], ['methodical', 1], [', ', 0], ['eccentric', 1], [', brave, determined, confident, a bit indecisive. ', 0], ["Don't judge me by my losses", 1], [', they are very few.', 0]]
+      ]
+    }
+  };
+
+  // Hover preview per experience row: a video if set, otherwise an image, otherwise no preview.
+  const EXP_MEDIA = [
+    { video: '', img: 'assets/proj-arandudf.png' },
+    { video: '', img: 'assets/proj-aritmatch.png' },
+    { video: '', img: '' },
+    { video: '', img: '' }
+  ];
+
+  const SITES = {
+    arandu: { href: 'https://arandudf.com.br', img: 'assets/proj-arandudf.png', label: 'arandudf.com.br' },
+    arit: { href: 'https://aritmatch.com.br', img: 'assets/proj-aritmatch.png', label: 'aritmatch.com.br' }
+  };
+  // Each row: direction, start offset (cqw), and cards (site key or null = placeholder)
+  const ROWS = [
+    { dir: 1, ml: -6, cards: ['arandu', null, 'arit', null, 'arandu', null] },
+    { dir: -1, ml: -16, cards: [null, 'arit', null, 'arandu', null, 'arit'] },
+    { dir: 1, ml: -2, cards: ['arandu', null, 'arit', null, 'arandu', null] },
+    { dir: -1, ml: -12, cards: [null, 'arit', null, 'arandu', null, 'arit'] }
+  ];
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+  const hdr = $('#hdr'), stage = $('#stage'), sobre = $('#sobre');
+  const panels = [...$$('.panel')];
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const narrowMQ = window.matchMedia('(max-width: 759px)');
+  const store = {
+    get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let lang = 'pt', scrolled = false, openIdx = null;
+
+  // ---------- Projects ----------
+  const rowsEl = $('#rows');
+  rowsEl.innerHTML = ROWS.map((r, i) => `<div class="row" data-dir="${r.dir}" style="margin-left:${r.ml}cqw">${r.cards.map(k => {
+    if (!k) return '<div class="card soon"><span data-i18n="soon">Em breve</span></div>';
+    const s = SITES[k];
+    return `<a class="card" href="${s.href}" target="_blank" rel="noopener"><img src="${s.img}" alt="Página inicial de ${s.label}" loading="lazy"><span class="tag">${s.label} ↗</span></a>`;
+  }).join('')}</div>`).join('');
+  const rows = [...rowsEl.children];
+
+  // ---------- Language ----------
+  let scrTimers = {};
+  function renderH1() {
+    const words = T[lang].h1.split(' ');
+    $('#h1').innerHTML = words.map((w, i) => `<span data-w="${i}">${esc(w)}</span>${i < words.length - 1 ? ' ' : ''}`).join('');
+  }
+  function renderPanels() {
+    $$('[data-panel]').forEach(p => {
+      p.innerHTML = T[lang].p[+p.dataset.panel].map(([s, b]) => b ? `<b>${esc(s)}</b>` : esc(s)).join('');
+    });
+  }
+  function renderExp() {
+    $('#expList').innerHTML = T[lang].exp.map(([kind, role, place], i) =>
+      `<div class="exp-row" data-i="${i}"><span class="kind">${esc(kind)}</span><span class="role">${esc(role)}</span><span class="place">${esc(place)}</span></div>`).join('');
+  }
+  function setLang(l) {
+    Object.values(scrTimers).forEach(clearInterval); scrTimers = {};
+    lang = l;
+    const t = T[l];
+    $$('[data-i18n]').forEach(el => { if (t[el.dataset.i18n] != null) el.textContent = t[el.dataset.i18n]; });
+    $$('.lang [data-lang]').forEach(s => s.classList.toggle('on', s.dataset.lang === l));
+    $('#up').setAttribute('aria-label', t.up);
+    document.documentElement.lang = l === 'pt' ? 'pt-BR' : 'en';
+    renderH1(); renderPanels(); renderExp();
+    store.set('lang', l);
+  }
+  $('#lang').addEventListener('click', () => setLang(lang === 'pt' ? 'en' : 'pt'));
+  setLang(store.get('lang') === 'en' ? 'en' : 'pt');
+
+  // ---------- H1 scramble per word ----------
+  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#%&*@$/';
+  $('#h1').addEventListener('mouseover', e => {
+    const span = e.target.closest('[data-w]');
+    if (!span || reduce) return;
+    const key = span.dataset.w;
+    if (scrTimers[key]) return;
+    const word = T[lang].h1.split(' ')[+key];
+    const total = 16; let f = 0;
+    scrTimers[key] = setInterval(() => {
+      f++;
+      if (f >= total) { clearInterval(scrTimers[key]); delete scrTimers[key]; span.textContent = word; return; }
+      span.textContent = [...word].map((c, i) => (c === ',' || f / total > (i + 1) / word.length) ? c : CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+    }, 35);
+  });
+
+  // ---------- Navigation ----------
+  function go(id) {
+    closePanel();
+    const el = document.getElementById(id);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 60, behavior: reduce ? 'auto' : 'smooth' });
+  }
+  $$('[data-go]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(a.dataset.go); }));
+  $('#up').addEventListener('click', e => { e.preventDefault(); closePanel(); window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+
+  function updateHeader() {
+    hdr.classList.toggle('scrolled', scrolled);
+    hdr.classList.toggle('pill', scrolled || narrowMQ.matches);
+    $('#up').tabIndex = scrolled ? 0 : -1;
+  }
+
+  // ---------- Lupa ----------
+  $$('.lupa').forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--x', (e.clientX - r.left) + 'px');
+      el.style.setProperty('--y', (e.clientY - r.top) + 'px');
+      el.style.setProperty('--r', narrowMQ.matches ? '60px' : 'max(6.5cqw,70px)');
+    });
+    el.addEventListener('mouseleave', () => el.style.setProperty('--r', '0px'));
+  });
+
+  // ---------- Panels: spread on hover, expand on click ----------
+  sobre.addEventListener('mouseenter', () => { if (!narrowMQ.matches && openIdx == null) sobre.classList.add('spread'); });
+  sobre.addEventListener('mouseleave', () => sobre.classList.remove('spread'));
+
+  function openPanel(i) {
+    if (openIdx === i) return closePanel();
+    closePanel();
+    const el = panels[i];
+    const par = el.offsetParent.getBoundingClientRect();
+    const cx = par.left + el.offsetLeft + el.offsetWidth / 2, cy = par.top + el.offsetTop + el.offsetHeight / 2;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const s = Math.min(vw * 0.9 / el.offsetWidth, vh * 0.86 / el.offsetHeight);
+    openIdx = i;
+    sobre.classList.remove('spread');
+    document.body.style.overflow = 'hidden';
+    stage.classList.add('exp-open');
+    el.classList.add('open');
+    el.style.transform = `translate(${vw / 2 - cx}px,${vh / 2 - cy}px) scale(${s}) rotate(0deg)`;
+  }
+  function closePanel() {
+    if (openIdx == null) return;
+    const el = panels[openIdx];
+    el.style.transform = '';
+    stage.classList.remove('exp-open');
+    document.body.style.overflow = '';
+    openIdx = null;
+    setTimeout(() => { if (!el.style.transform) el.classList.remove('open'); }, 700);
+  }
+  panels.forEach((p, i) => {
+    p.addEventListener('click', () => openPanel(i));
+    p.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPanel(i); } });
+  });
+  $('#overlay').addEventListener('click', closePanel);
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+  // ---------- Experience hover preview ----------
+  const preview = $('#preview'), previewBox = $('#previewBox');
+  const vid = { x: 0, y: 0, tx: 0, ty: 0, on: false };
+  const expList = $('#expList');
+  let hoverIdx = null;
+  function showPreview(i) {
+    const m = EXP_MEDIA[i] || {};
+    if (!m.video && !m.img) { hidePreview(); return; }
+    if (hoverIdx !== i) {
+      previewBox.innerHTML = m.video
+        ? `<video src="${m.video}" autoplay muted loop playsinline></video>`
+        : `<img src="${m.img}" alt="">`;
+    }
+    hoverIdx = i;
+    preview.classList.add('on');
+  }
+  function hidePreview() { hoverIdx = null; vid.on = false; preview.classList.remove('on'); }
+  expList.addEventListener('mouseover', e => {
+    const row = e.target.closest('.exp-row');
+    if (!row) return;
+    vid.tx = e.clientX; vid.ty = e.clientY;
+    if (!vid.on) { vid.x = e.clientX; vid.y = e.clientY; vid.on = true; }
+    showPreview(+row.dataset.i);
+  });
+  expList.addEventListener('mousemove', e => { vid.tx = e.clientX; vid.ty = e.clientY; });
+  expList.addEventListener('mouseleave', hidePreview);
+  (function vloop() {
+    requestAnimationFrame(vloop);
+    if (!vid.on) return;
+    vid.x += (vid.tx - vid.x) * 0.16; vid.y += (vid.ty - vid.y) * 0.16;
+    const pw = preview.offsetWidth || 280, ph = preview.offsetHeight || 175;
+    const px = vid.x + 24 + pw > window.innerWidth ? vid.x - 24 - pw : vid.x + 24;
+    const py = Math.max(8, Math.min(window.innerHeight - ph - 8, vid.y - 90));
+    const rot = Math.max(-6, Math.min(6, (vid.tx - vid.x) * 0.08));
+    preview.style.transform = `translate3d(${px.toFixed(1)}px,${py.toFixed(1)}px,0) rotate(${rot.toFixed(2)}deg)`;
+  })();
+
+  // ---------- Scroll ----------
+  let ticking = false;
+  function onScroll() {
+    ticking = false;
+    const s = window.scrollY > 80;
+    if (s !== scrolled) { scrolled = s; updateHeader(); }
+    if (reduce) return;
+    const r = rowsEl.getBoundingClientRect(), vh = window.innerHeight;
+    const p = Math.max(-0.2, Math.min(1.2, (vh - r.top) / (vh + r.height)));
+    rows.forEach((row, i) => { row.style.transform = `translate3d(${(p - 0.5) * +row.dataset.dir * (18 + i * 4)}vw,0,0)`; });
+  }
+  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  window.addEventListener('resize', () => { closePanel(); updateHeader(); onScroll(); });
+  narrowMQ.addEventListener && narrowMQ.addEventListener('change', () => { sobre.classList.remove('spread'); updateHeader(); });
+
+  updateHeader();
+  onScroll();
+})();

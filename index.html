@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lucas Petter</title>
+<meta name="description" content="Lucas de Moraes Petter — web design, landing pages e engenheiro de software. CTO & Co-founder da Arandu Intelligence Systems.">
+<meta name="theme-color" content="#181818">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lucas Petter">
+<meta property="og:description" content="Web design, landing pages e engenheiro de software.">
+<meta property="og:image" content="assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lucas Petter — web design, landing pages e engenheiro de software">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lucas Petter">
+<meta name="twitter:description" content="Web design, landing pages e engenheiro de software.">
+<meta name="twitter:image" content="assets/og.png">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="hdr" id="hdr">
+  <nav class="hdr-nav" aria-label="Principal">
+    <a href="#" class="up" id="up" aria-label="Voltar ao início" tabindex="-1">↑</a>
+    <a href="#sobre" data-go="sobre" data-i18n="n0">Sobre</a>
+    <a href="#projetos" data-go="projetos" data-i18n="n1">Projetos</a>
+    <a href="#experiencia" data-go="experiencia" data-i18n="n2">Experiência</a>
+    <a href="#contato" data-go="contato" class="cta" data-i18n="n3">Contato</a>
+  </nav>
+  <button class="lang" id="lang" type="button" aria-label="Mudar idioma / Change language">
+    <span data-lang="pt">PT</span><span>/</span><span data-lang="en">EN</span>
+  </button>
+</header>
+
+<main class="stage" id="stage">
+  <div class="overlay" id="overlay"></div>
+
+  <h1 class="h1" id="h1">Web design, landing pages, e engenheiro de software</h1>
+
+  <nav class="list" aria-label="Seções">
+    <a href="#sobre" data-go="sobre"><span data-i18n="l0">Quem sou eu</span><span class="arr">↗</span></a>
+    <a href="#projetos" data-go="projetos"><span data-i18n="l1">arandu&amp;aritmatch</span><span class="arr">↗</span></a>
+    <a href="#experiencia" data-go="experiencia"><span data-i18n="l2">Acadêmico e profissional</span><span class="arr">↗</span></a>
+    <a href="#contato" data-go="contato"><span data-i18n="l3">Emails e social</span><span class="arr">↗</span></a>
+  </nav>
+
+  <div class="sig lupa">
+    <div class="sig-layer blurred">
+      <img src="assets/assinatura-rosa.svg" alt="Lucas Petter" draggable="false">
+      <span class="copy">©</span>
+    </div>
+    <div class="sig-layer lens" aria-hidden="true">
+      <img src="assets/assinatura-rosa.svg" alt="" draggable="false">
+      <span class="copy">©</span>
+    </div>
+  </div>
+
+  <section id="sobre" class="sobre" aria-label="Sobre">
+    <article class="panel rosa" tabindex="0">
+      <img src="assets/imagem-rosa.png" alt="" draggable="false">
+      <p data-panel="1"></p>
+    </article>
+    <article class="panel amarela" tabindex="0">
+      <img src="assets/imagem-amarela.png" alt="" draggable="false">
+      <p data-panel="2"></p>
+    </article>
+    <article class="panel azul" tabindex="0">
+      <img src="assets/imagem-azul.png" alt="" draggable="false">
+      <p data-panel="0"></p>
+    </article>
+  </section>
+
+  <section id="projetos" class="projetos" aria-label="Projetos">
+    <div class="rows" id="rows"></div>
+  </section>
+
+  <section id="experiencia" class="exp" aria-label="Experiência">
+    <div class="exp-list" id="expList"></div>
+  </section>
+
+  <footer id="contato" class="foot">
+    <div class="foot-name lupa">
+      <div class="blurred">© Lucas Petter</div>
+      <div class="lens" aria-hidden="true">© Lucas Petter</div>
+    </div>
+    <div class="social">
+      <div class="social-title">Social</div>
+      <a href="https://instagram.com/lucasmpetter" target="_blank" rel="noopener"><span class="ico ig"><span></span></span><span>@lucasmpetter</span></a>
+      <a href="https://x.com/lucasmpetter" target="_blank" rel="noopener"><span class="ico x">X</span><span>@lucasmpetter</span></a>
+      <a href="mailto:lucas.petter@arandudf.com.br"><span class="ico">✉</span><span>lucas.petter@arandudf.com.br</span></a>
+      <a href="mailto:lucasdemoraespetter@gmail.com"><span class="ico">✉</span><span>lucasdemoraespetter@gmail.com</span></a>
+    </div>
+  </footer>
+</main>
+
+<div class="preview" id="preview" aria-hidden="true"><div class="preview-box" id="previewBox"></div></div>
+
+<script src="script.js"></script>
+</body>
+</html>
