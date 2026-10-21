@@ -185,6 +185,7 @@ img { user-select: none; -webkit-user-drag: none; }
 }
 .panel.azul img { width: 40%; rotate: 3.34deg; }
 .panel.open { z-index: 90; }
+.deck-hint { display: none; }
 
 /* ---------- Projetos: scroll-driven marquee rows ---------- */
 .projetos { position: absolute; left: 0; top: 116cqw; width: 100%; overflow: hidden; }
@@ -274,12 +275,36 @@ a.card:hover { transform: scale(1.03); }
   .list { margin: 32px 20px 0; gap: 14px; }
   .sig { width: calc(100% - 40px); margin: 48px 20px 0; }
   .sig-layer.blurred { filter: blur(3px); }
-  .sobre { width: auto; height: auto; margin: 64px 16px 0; display: flex; flex-direction: column; gap: 48px; }
-  .sobre .panel, .sobre.spread .panel {
-    position: relative; left: auto; top: auto; width: 100%; height: auto; z-index: 1;
-    padding: 16px; border-radius: 28px;
-    transform: rotate(calc(var(--r) * .6));
+  /* Header pill shrinks with the viewport so it never overflows */
+  .hdr.pill {
+    --ng: min(12px, 2.2vw);
+    gap: min(14px, 2.4vw);
+    padding: 6px 8px 6px 14px;
+    max-width: calc(100vw - 16px);
+    box-sizing: border-box;
+    font-size: min(11px, 2.9vw);
   }
+  .hdr-nav .cta { padding: 3px 6px; }
+  .hdr.scrolled .up { width: 22px; }
+  .up { height: 22px; font-size: 12px; }
+
+  /* Sobre: 3D deck, viewed from slightly above; back cards peek out on top */
+  .sobre {
+    width: auto; height: auto;
+    margin: 72px 16px 0;
+    padding-top: 84px;
+    display: grid;
+  }
+  .sobre .panel, .sobre.spread .panel {
+    grid-area: 1 / 1;
+    position: relative; left: auto; top: auto; width: 100%; height: auto;
+    padding: 16px; border-radius: 28px;
+    transform-origin: 50% 100%;
+    transition: transform .6s var(--ease), box-shadow .6s;
+  }
+  .sobre .panel.back { box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 -10px 30px rgba(0,0,0,.35); }
+  .panel.amarela { background: linear-gradient(135deg, rgba(150,134,0,.97), rgba(120,108,0,.95)); }
+  .deck-hint { display: block; margin: 22px 20px 0; text-align: center; font-size: 11px; color: rgba(255,255,255,.5); }
   .panel img, .panel.rosa img, .panel.amarela img, .panel.azul img { width: 42%; }
   .panel p, .panel.amarela p { font-size: 17px; }
   .panel.amarela p { font-size: 14px; }

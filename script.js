@@ -4,7 +4,7 @@
       n0: 'Sobre', n1: 'Projetos', n2: 'Experiência', n3: 'Contato',
       h1: 'Web design, landing pages, e engenheiro de software',
       l0: 'Quem sou eu', l1: 'arandu&aritmatch', l2: 'Acadêmico e profissional', l3: 'Emails e social',
-      soon: 'Em breve', up: 'Voltar ao início',
+      soon: 'Em breve', up: 'Voltar ao início', hint: 'Toque num card para puxá-lo',
       exp: [['Profissional', 'CTO & Co-founder', 'Arandu Intelligence Systems'], ['Profissional', 'Criador do Aritmatch', 'Arandu'], ['Profissional', 'Web designer', 'Landing pages'], ['Acadêmico', 'Engenharia de Software', 'Uniceplac · Gama']],
       p: [
         [['Me chamo Lucas, sou engenheiro de software, mas gosto mesmo é de ', 0], ['web design', 1], [', criação de landing pages e one-paged sites.', 0]],
@@ -16,7 +16,7 @@
       n0: 'About', n1: 'Projects', n2: 'Experience', n3: 'Contact',
       h1: 'Web design, landing pages, and software engineer',
       l0: 'Who I am', l1: 'arandu&aritmatch', l2: 'Academic and professional', l3: 'Emails and social',
-      soon: 'Coming soon', up: 'Back to top',
+      soon: 'Coming soon', up: 'Back to top', hint: 'Tap a card to pull it',
       exp: [['Professional', 'CTO & Co-founder', 'Arandu Intelligence Systems'], ['Professional', 'Creator of Aritmatch', 'Arandu'], ['Professional', 'Web designer', 'Landing pages'], ['Academic', 'Software Engineering', 'Uniceplac · Gama']],
       p: [
         [["I'm Lucas, a software engineer, but what I really love is ", 0], ['web design', 1], [', building landing pages and one-page sites.', 0]],
@@ -143,6 +143,37 @@
   sobre.addEventListener('mouseenter', () => { if (!narrowMQ.matches && openIdx == null) sobre.classList.add('spread'); });
   sobre.addEventListener('mouseleave', () => sobre.classList.remove('spread'));
 
+  // Narrow screens: panels form a 3D deck (front -> back). DOM order: 0 rosa, 1 amarela, 2 azul.
+  let deck = [2, 1, 0], pulling = false;
+  const deckTf = (d, lift = 0) =>
+    `perspective(900px) translateY(${-d * 40 - lift}px) rotateX(-18deg) scale(${(1 - d * 0.06).toFixed(2)})`;
+  function deckApply() {
+    const narrow = narrowMQ.matches;
+    panels.forEach((p, i) => {
+      if (i === openIdx) return;
+      const d = deck.indexOf(i);
+      p.style.transform = narrow ? deckTf(d) : '';
+      p.style.zIndex = narrow ? 10 - d : '';
+      p.classList.toggle('back', narrow && d > 0);
+    });
+  }
+  // Pull a back card up out of the deck, then bring it to the front
+  function pull(i) {
+    if (pulling) return;
+    pulling = true;
+    const p = panels[i], h = p.offsetHeight;
+    p.style.transform = deckTf(deck.indexOf(i), h * 0.55);
+    setTimeout(() => {
+      deck = [i, ...deck.filter(x => x !== i)];
+      deckApply();
+      setTimeout(() => { pulling = false; }, 400);
+    }, reduce ? 0 : 280);
+  }
+  function activate(i) {
+    if (narrowMQ.matches && openIdx == null && deck[0] !== i) pull(i);
+    else openPanel(i);
+  }
+
   function openPanel(i) {
     if (openIdx === i) return closePanel();
     closePanel();
@@ -156,20 +187,21 @@
     document.body.style.overflow = 'hidden';
     stage.classList.add('exp-open');
     el.classList.add('open');
+    el.style.zIndex = 90;
     el.style.transform = `translate(${vw / 2 - cx}px,${vh / 2 - cy}px) scale(${s}) rotate(0deg)`;
   }
   function closePanel() {
     if (openIdx == null) return;
-    const el = panels[openIdx];
-    el.style.transform = '';
+    const i = openIdx, el = panels[i];
+    openIdx = null;
     stage.classList.remove('exp-open');
     document.body.style.overflow = '';
-    openIdx = null;
-    setTimeout(() => { if (!el.style.transform) el.classList.remove('open'); }, 700);
+    el.style.transform = narrowMQ.matches ? deckTf(deck.indexOf(i)) : '';
+    setTimeout(() => { if (openIdx !== i) { el.classList.remove('open'); deckApply(); } }, 700);
   }
   panels.forEach((p, i) => {
-    p.addEventListener('click', () => openPanel(i));
-    p.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPanel(i); } });
+    p.addEventListener('click', () => activate(i));
+    p.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(i); } });
   });
   $('#overlay').addEventListener('click', closePanel);
   window.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
@@ -224,8 +256,9 @@
   }
   window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
   window.addEventListener('resize', () => { closePanel(); updateHeader(); onScroll(); });
-  narrowMQ.addEventListener && narrowMQ.addEventListener('change', () => { sobre.classList.remove('spread'); updateHeader(); });
+  narrowMQ.addEventListener && narrowMQ.addEventListener('change', () => { sobre.classList.remove('spread'); updateHeader(); deckApply(); });
 
+  deckApply();
   updateHeader();
   onScroll();
 })();
