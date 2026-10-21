@@ -25,6 +25,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  // Apply the saved theme before first paint (no flash). Default (escuro) has no data-theme.
+  try {
+    var t = localStorage.getItem('lp-theme');
+    if (t === 'pastel') t = 'amarelo';
+    if (t && t !== 'escuro') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -56,11 +64,11 @@
 
   <div class="sig lupa">
     <div class="sig-layer blurred">
-      <img src="assets/assinatura-rosa.svg" alt="Lucas Petter" draggable="false">
+      <div class="sig-mark" role="img" aria-label="Lucas Petter"></div>
       <span class="copy">©</span>
     </div>
     <div class="sig-layer lens" aria-hidden="true">
-      <img src="assets/assinatura-rosa.svg" alt="" draggable="false">
+      <div class="sig-mark"></div>
       <span class="copy">©</span>
     </div>
   </div>
@@ -87,6 +95,16 @@
 
   <section id="experiencia" class="exp" aria-label="Experiência">
     <div class="exp-list" id="expList"></div>
+    <div class="theme">
+      <span data-i18n="theme">Tema</span>
+      <div class="theme-pill" role="group" aria-label="Tema">
+        <button type="button" data-theme-btn="escuro" style="--swatch:#181818"></button>
+        <button type="button" data-theme-btn="claro" style="--swatch:#F6F6F4"></button>
+        <button type="button" data-theme-btn="amarelo" style="--swatch:#FFE500"></button>
+        <button type="button" data-theme-btn="magenta" style="--swatch:#FF00DD"></button>
+        <button type="button" data-theme-btn="azul" style="--swatch:#0000FF"></button>
+      </div>
+    </div>
   </section>
 
   <footer id="contato" class="foot">

@@ -5,6 +5,7 @@
       h1: 'Web design, landing pages, e engenheiro de software',
       l0: 'Quem sou eu', l1: 'arandu&aritmatch', l2: 'Acadêmico e profissional', l3: 'Emails e social',
       soon: 'Em breve', up: 'Voltar ao início', hint: 'Toque num card para puxá-lo',
+      theme: 'Tema', themes: { escuro: 'Escuro', claro: 'Claro', amarelo: 'Amarelo', magenta: 'Magenta', azul: 'Azul' },
       exp: [['Profissional', 'CTO & Co-founder', 'Arandu Intelligence Systems'], ['Profissional', 'Criador do Aritmatch', 'Arandu'], ['Profissional', 'Web designer', 'Landing pages'], ['Acadêmico', 'Engenharia de Software', 'Uniceplac · Gama']],
       p: [
         [['Me chamo Lucas, sou engenheiro de software, mas gosto mesmo é de ', 0], ['web design', 1], [', criação de landing pages e one-paged sites.', 0]],
@@ -17,6 +18,7 @@
       h1: 'Web design, landing pages, and software engineer',
       l0: 'Who I am', l1: 'arandu&aritmatch', l2: 'Academic and professional', l3: 'Emails and social',
       soon: 'Coming soon', up: 'Back to top', hint: 'Tap a card to pull it',
+      theme: 'Theme', themes: { escuro: 'Dark', claro: 'Light', amarelo: 'Yellow', magenta: 'Magenta', azul: 'Blue' },
       exp: [['Professional', 'CTO & Co-founder', 'Arandu Intelligence Systems'], ['Professional', 'Creator of Aritmatch', 'Arandu'], ['Professional', 'Web designer', 'Landing pages'], ['Academic', 'Software Engineering', 'Uniceplac · Gama']],
       p: [
         [["I'm Lucas, a software engineer, but what I really love is ", 0], ['web design', 1], [', building landing pages and one-page sites.', 0]],
@@ -90,11 +92,29 @@
     $$('[data-i18n]').forEach(el => { if (t[el.dataset.i18n] != null) el.textContent = t[el.dataset.i18n]; });
     $$('.lang [data-lang]').forEach(s => s.classList.toggle('on', s.dataset.lang === l));
     $('#up').setAttribute('aria-label', t.up);
+    $('.theme-pill').setAttribute('aria-label', t.theme);
+    $$('[data-theme-btn]').forEach(b => { b.setAttribute('aria-label', t.themes[b.dataset.themeBtn]); b.title = t.themes[b.dataset.themeBtn]; });
     document.documentElement.lang = l === 'pt' ? 'pt-BR' : 'en';
     renderH1(); renderPanels(); renderExp();
     store.set('lang', l);
   }
   $('#lang').addEventListener('click', () => setLang(lang === 'pt' ? 'en' : 'pt'));
+
+  // ---------- Theme ----------
+  const THEMES = ['escuro', 'claro', 'amarelo', 'magenta', 'azul'];
+  const metaTheme = $('meta[name="theme-color"]');
+  function setTheme(th, save) {
+    if (th === 'pastel') th = 'amarelo';
+    if (!THEMES.includes(th)) th = 'escuro';
+    if (th === 'escuro') delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = th;
+    $$('[data-theme-btn]').forEach(b => b.setAttribute('aria-pressed', b.dataset.themeBtn === th));
+    if (metaTheme) metaTheme.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    if (save) store.set('lp-theme', th);
+  }
+  $$('[data-theme-btn]').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.themeBtn, true)));
+  const savedTheme = store.get('lp-theme');
+  setTheme(savedTheme || 'escuro', savedTheme === 'pastel');
   setLang(store.get('lang') === 'en' ? 'en' : 'pt');
 
   // ---------- H1 scramble per word ----------
