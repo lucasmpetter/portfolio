@@ -1,44 +1,15 @@
 :root {
-  --bg: #181818; --fg: #FFFFFF; --card: #232323;
-  --line: rgba(255,255,255,.16); --glass: rgba(24,24,24,.55);
-  --accent: #FF00DD;              /* hover de links de texto (menu, lista do hero) */
-  --hov: #FF00DD;                 /* hover geral de botões */
-  --exp-hov: #FF00DD;             /* hover das linhas da seção Experiência */
-  --up-hov: #FF00DD;              /* hover da seta "voltar ao topo" (fundo + borda) */
-  --cta-bg: #FFE500; --cta-fg: #181818;   /* botão Contato */
-  --sig: #FF00DD;                 /* cor da assinatura */
+  --bg: #F6F6F4; --fg: #181818; --card: #E6E6E3;
+  --line: rgba(24,24,24,.14); --glass: rgba(246,246,244,.65);
+  --accent: #0000FF;              /* hover de links de texto (menu) */
+  --exp-hov: #0000FF;             /* hover das linhas da seção Experiência */
+  --up-hov: #0000FF;              /* hover da seta "voltar ao topo" (fundo + borda) */
+  --cta-bg: #0000FF; --cta-fg: #FFFFFF;          /* botão Contato */
+  --cta-hov-bg: #FFE500; --cta-hov-fg: #181818;  /* botão Contato, hover */
   --pink: #FF00DD;
   --ease: cubic-bezier(.2,.8,.2,1);
   --mono: 'Geist Mono', ui-monospace, monospace;
   --sans: Geist, system-ui, sans-serif;
-}
-:root[data-theme="claro"] {
-  --bg: #F6F6F4; --fg: #181818; --card: #E6E6E3;
-  --line: rgba(24,24,24,.14); --glass: rgba(246,246,244,.65);
-  --accent: #0000FF; --exp-hov: #0000FF; --up-hov: #0000FF;
-  --cta-bg: #0000FF; --cta-fg: #FFFFFF;
-  --cta-hov-bg: #FFE500; --cta-hov-fg: #181818;
-}
-:root[data-theme="amarelo"] {
-  --bg: #FFE500; --fg: #181818; --card: #EBD300;
-  --line: rgba(24,24,24,.18); --glass: rgba(255,229,0,.6);
-  --accent: #0000FF; --exp-hov: #0000FF; --up-hov: #0000FF;
-  --cta-bg: #181818; --cta-fg: #FFFFFF;
-  --cta-hov-bg: #0000FF; --cta-hov-fg: #FFFFFF;
-  --sig: #0000FF;
-}
-:root[data-theme="magenta"] {
-  --bg: #FF00DD; --fg: #FFFFFF; --card: #E000C3;
-  --line: rgba(255,255,255,.3); --glass: rgba(255,0,221,.5);
-  --accent: #181818; --hov: #181818; --exp-hov: #181818; --up-hov: #181818;
-  --sig: #0000FF;
-}
-:root[data-theme="azul"] {
-  --bg: #0000FF; --fg: #FFFFFF; --card: #1C1CFF;
-  --line: rgba(255,255,255,.28); --glass: rgba(0,0,255,.5);
-  --accent: #FFE500; --hov: #FFE500; --exp-hov: #FFE500; --up-hov: #FFE500;
-  --cta-hov-bg: #181818; --cta-hov-fg: #FFFFFF;
-  --sig: #FFFFFF;
 }
 
 html { scroll-behavior: smooth; }
@@ -88,7 +59,7 @@ img { user-select: none; -webkit-user-drag: none; }
 .hdr:not(.pill) .lang { background: var(--bg); padding: 0 14px; transition: background .5s ease; }
 .hdr-nav a { padding: 4px 0; white-space: nowrap; }
 .hdr-nav .cta { padding: 4px 8px; border-radius: 5px; background: var(--cta-bg); color: var(--cta-fg); transition: background .2s, color .2s; }
-.hdr-nav .cta:hover { background: var(--cta-hov-bg, var(--hov)); color: var(--cta-hov-fg, #FFFFFF); }
+.hdr-nav .cta:hover { background: var(--cta-hov-bg); color: var(--cta-hov-fg); }
 .up {
   display: grid; place-items: center;
   width: 0; height: 24px;
@@ -153,15 +124,28 @@ img { user-select: none; -webkit-user-drag: none; }
   width: min(45cqw, calc((var(--hero-end) - var(--hero-top)) * .91 * 518 / 633));
   aspect-ratio: 518 / 633;
 }
-.hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-/* Pink → orange glass bar over the eyes */
-.hero-eyes {
-  position: absolute; left: 33.2%; top: 32.7%; width: 62.9%; height: 15.1%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255,0,221,.65), rgba(255,170,30,.6));
+/* Solid black silhouette (brightness(0) keeps the transparent background) */
+.hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; filter: brightness(0); }
+/* Googly eyes: the pupils follow the pointer (see script.js) */
+.eye {
+  position: absolute; width: 12.6%; aspect-ratio: 1.38;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: #FFFFFF;
+  overflow: hidden;
   pointer-events: none;
 }
-/* Signature stays pink in every theme */
+.eye-l { left: 56.6%; top: 40%; rotate: -4deg; }
+.eye-r { left: 78.2%; top: 41.5%; rotate: 5deg; }
+.pupil {
+  position: absolute; left: 50%; top: 50%;
+  width: 30%; aspect-ratio: 1;
+  margin: -15% 0 0 -15%;
+  border-radius: 50%;
+  background: #000000;
+  will-change: transform;
+}
+/* Signature: always the pink SVG */
 .hero-sig {
   position: absolute; right: 3.1cqw; bottom: 2.4cqw; z-index: 1;
   width: 9.2cqw; height: auto; display: block;
@@ -177,11 +161,10 @@ img { user-select: none; -webkit-user-drag: none; }
 .h1 .line { display: block; white-space: nowrap; }
 .h1 [data-w] { cursor: default; }
 
-/* Arrow: draws itself in, then keeps nudging toward the photo */
+/* Arrow: draws itself in once, then stays */
 .hero-arrow {
   position: absolute; left: 28.7cqw; top: 34cqw; z-index: 2;
   width: 28cqw; height: auto; overflow: visible;
-  animation: arrow-point 1.6s ease-in-out 1.4s infinite;
 }
 /* Hidden until its own draw starts, so the round caps don't show as dots */
 .hero-arrow path {
@@ -195,14 +178,6 @@ img { user-select: none; -webkit-user-drag: none; }
   from { stroke-dashoffset: 1; opacity: 1; }
   to { stroke-dashoffset: 0; opacity: 1; }
 }
-@keyframes arrow-point {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(1.4cqw); }
-}
-
-/* The photo is a dark silhouette: on the dark theme it's flipped to light */
-:root:not([data-theme]) .hero-photo img,
-:root[data-theme="escuro"] .hero-photo img { filter: invert(1); }
 
 /* Lupa: blurred base + sharp clipped lens following the pointer */
 .lupa { --r: 0px; }
@@ -272,26 +247,16 @@ img { user-select: none; -webkit-user-drag: none; }
 .panel.azul img { width: 40%; rotate: 3.34deg; }
 .panel.open { z-index: 90; }
 
-/* Themes where the translucent glass blends into the page: use solid versions of the
-   colors the panels show over the dark theme (glass composited on #181818). */
-:root[data-theme="claro"] .panel.rosa, :root[data-theme="amarelo"] .panel.rosa,
-:root[data-theme="magenta"] .panel.rosa, :root[data-theme="azul"] .panel.rosa {
-  background: linear-gradient(135deg, #F601D5, #E303C5);
-}
-:root[data-theme="claro"] .panel.amarela, :root[data-theme="amarelo"] .panel.amarela,
-:root[data-theme="magenta"] .panel.amarela, :root[data-theme="azul"] .panel.amarela {
-  background: linear-gradient(135deg, #82760D, #6B620F);
-}
-:root[data-theme="claro"] .panel.azul, :root[data-theme="amarelo"] .panel.azul,
-:root[data-theme="magenta"] .panel.azul, :root[data-theme="azul"] .panel.azul {
+/* On the light page the translucent glass would wash out, so the panels are
+   solid: the colors they show over a dark background (glass composited on #181818). */
+.panel.rosa { background: linear-gradient(135deg, #F601D5, #E303C5); }
+.panel.amarela { background: linear-gradient(135deg, #82760D, #6B620F); }
+.panel.azul {
   background:
     radial-gradient(circle at 75% 12%, rgba(150,80,255,.7), rgba(150,80,255,0) 45%),
     radial-gradient(circle at 85% 95%, rgba(120,90,255,.55), rgba(120,90,255,0) 40%),
     linear-gradient(135deg, #0303E3, #2315BE);
 }
-/* Same-color panel on the same-color page: a stronger edge keeps it separated */
-:root[data-theme="magenta"] .panel.rosa,
-:root[data-theme="azul"] .panel.azul { border-color: rgba(255,255,255,.6); }
 .deck-hint { display: none; }
 
 /* ---------- Projetos: scroll-driven marquee rows ---------- */
@@ -332,25 +297,6 @@ a.card:hover { transform: scale(1.03); }
 }
 .exp-row:hover { color: var(--exp-hov); padding-left: 1.2cqw; }
 
-/* Theme picker: end of Experiência, right-aligned */
-.theme { display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 28px; font-size: 12px; }
-.theme-pill {
-  display: flex; gap: 8px; padding: 6px;
-  border-radius: 999px;
-  background: var(--glass);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-}
-.theme-pill button {
-  width: 22px; height: 22px; padding: 0;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  background: var(--swatch);
-  transition: transform .2s var(--ease), box-shadow .2s;
-}
-.theme-pill button:hover { transform: scale(1.15); }
-.theme-pill button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--fg); }
-.theme-pill button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .exp-row .kind, .exp-row .place { font-size: 12px; }
 .exp-row .place { text-align: right; }
 .exp-row .role { font-family: var(--sans); font-size: max(2.4cqw, 20px); line-height: 1.1; }
