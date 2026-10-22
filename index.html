@@ -26,36 +26,27 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <!-- ?v= forces browsers to fetch new CSS/JS after each deploy (GitHub Pages caches for 10 min) -->
-<link rel="stylesheet" href="styles.css?v=20261022e">
+<link rel="stylesheet" href="styles.css?v=20261022f">
 <style>
   /* Loading screen. Inline on purpose: it must work even if a stale styles.css
      comes from cache. "Olá!" in several languages on #181818; when the page is
-     ready, a ball in the page color grows from the center until it covers the
-     screen, then the whole loader fades out over the hero.
-     Only transform and opacity are animated: the two things every browser
-     (iOS Safari included) animates smoothly on the GPU. */
+     ready, a circular hole opens in the middle of it and grows until the whole
+     site shows through.
+     The hole is a clip-path polygon (the screen minus a 96-point circle) built in
+     script.js and grown with a CSS transition between two polygons with the same
+     points: it animates smoothly everywhere, iOS Safari included, without
+     animating CSS variables or masks (which iOS repainted unreliably). */
   .loader { display: none; }
   /* The root background also paints the reserved scrollbar gutter: dark while loading */
   html.loading { overflow: hidden; background: #181818; }
-  /* Once the ball covers the screen, the gutter turns light with it */
-  html.loading.revealed { background: #F6F6F4; }
-  html.loading .loader { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; background: #181818; transition: opacity .45s ease; }
-  .loader-word { position: relative; font-family: Geist, system-ui, sans-serif; font-weight: 400; font-size: clamp(26px, 2.8vw, 42px); line-height: 1; letter-spacing: -.01em; color: #FFFFFF; transition: opacity .2s ease; }
-  /* 150vmax is wider than any screen's diagonal, so at scale(1) it covers everything */
-  .loader-ball {
-    position: absolute; left: 50%; top: 50%;
-    width: 150vmax; height: 150vmax; margin: -75vmax 0 0 -75vmax;
-    border-radius: 50%; background: #F6F6F4;
-    transform: scale(0); will-change: transform;
-    transition: transform .9s cubic-bezier(.76,0,.24,1) .25s;
-  }
-  /* 1) the word fades (.2s)  2) the ball grows (.25s → 1.15s)  3) the loader fades (.out) */
+  /* Late in the reveal the gutter turns light, so it does not flip at the very end */
+  html.loading.gutter-light { background: #F6F6F4; }
+  html.loading .loader { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; background: #181818; }
+  .loader-word { font-family: Geist, system-ui, sans-serif; font-weight: 400; font-size: clamp(26px, 2.8vw, 42px); line-height: 1; letter-spacing: -.01em; color: #FFFFFF; transition: opacity .2s ease; }
   .loader.reveal .loader-word { opacity: 0; }
-  .loader.reveal .loader-ball { transform: scale(1); }
-  .loader.out { opacity: 0; }
-  /* Reduced motion: no ball, the screen just fades out */
+  /* Reduced motion: no circle, the screen just fades out */
   @media (prefers-reduced-motion: reduce) {
-    .loader-ball { display: none; }
+    .loader.reveal { opacity: 0; transition: opacity .4s ease; }
   }
 </style>
 <script>
@@ -72,7 +63,7 @@
 </script>
 </head>
 <body>
-<div class="loader" id="loader" aria-hidden="true"><span class="loader-ball"></span><span class="loader-word" id="loaderWord">Olá!</span></div>
+<div class="loader" id="loader" aria-hidden="true"><span class="loader-word" id="loaderWord">Olá!</span></div>
 
 <header class="hdr" id="hdr">
   <nav class="hdr-nav" aria-label="Principal">
@@ -153,6 +144,6 @@
 
 <div class="preview" id="preview" aria-hidden="true"><div class="preview-box" id="previewBox"></div></div>
 
-<script src="script.js?v=20261022e"></script>
+<script src="script.js?v=20261022f"></script>
 </body>
 </html>

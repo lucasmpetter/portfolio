@@ -399,7 +399,7 @@ a.card:hover { transform: scale(1.03); }
 
 /* Loading screen: its CSS lives inline in index.html, so it never depends on this file */
 /* The hero arrow waits for the reveal instead of drawing behind the loader */
-html.loading:not(.revealed) .hero-arrow path { animation-play-state: paused; }
+html.loading:not(.revealing) .hero-arrow path { animation-play-state: paused; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

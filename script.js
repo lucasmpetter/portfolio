@@ -314,12 +314,33 @@
       document.documentElement.classList.remove('loading', 'revealing', 'revealed');
       loader.remove();
     };
-    // CSS does the motion (see the inline <style> in index.html): the word fades,
-    // the ball grows until it covers the screen (ends at 1.15s), then the loader
-    // fades out over the hero (.45s) and is removed.
-    const BALL_DONE = reduce ? 200 : 1150, FADE = 450;
-    setTimeout(() => { loader.classList.add('out'); document.documentElement.classList.add('revealed'); }, BALL_DONE);
-    setTimeout(done, BALL_DONE + FADE + 50);
+    setTimeout(done, 3000); // safety net
+    if (reduce) { setTimeout(done, 450); return; }
+
+    // The hole: the loader is clipped to "the screen minus a circle". Both clip
+    // polygons have the same points, so the browser's transition moves each circle
+    // point straight outward and the hole stays round while it grows.
+    const DELAY = 300, DURATION = 1100;
+    const R = Math.ceil(Math.hypot(window.innerWidth, window.innerHeight) / 2) + 24;
+    const hole = r => {
+      const pts = ['0 0', '100% 0', '100% 100%', '0 100%', '0 50%'];
+      // Circle traced the opposite way round (and evenodd), starting/ending at its
+      // leftmost point, joined to the left edge by a zero-width seam
+      for (let i = 0; i <= 96; i++) {
+        const a = Math.PI - (i / 96) * Math.PI * 2;
+        pts.push(`calc(50% + ${(Math.cos(a) * r).toFixed(1)}px) calc(50% + ${(Math.sin(a) * r).toFixed(1)}px)`);
+      }
+      pts.push('0 50%');
+      return `polygon(evenodd, ${pts.join(', ')})`;
+    };
+    const setClip = v => { loader.style.clipPath = v; loader.style.webkitClipPath = v; };
+    setClip(hole(0));
+    loader.getBoundingClientRect(); // commit the closed state before transitioning
+    const ease = `${DURATION}ms cubic-bezier(.76,0,.24,1) ${DELAY}ms`;
+    loader.style.transition = `clip-path ${ease}, -webkit-clip-path ${ease}`;
+    requestAnimationFrame(() => setClip(hole(R)));
+    loader.addEventListener('transitionend', e => { if (/clip-path/.test(e.propertyName)) done(); });
+    setTimeout(() => document.documentElement.classList.add('gutter-light'), DELAY + DURATION * .6);
   }
   // n = how many words have been shown so far
   function nextHello(n) {
