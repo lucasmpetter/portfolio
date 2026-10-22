@@ -53,25 +53,26 @@
 <main class="stage" id="stage">
   <div class="overlay" id="overlay"></div>
 
-  <h1 class="h1" id="h1">Web design, landing pages, e engenheiro de software</h1>
+  <h1 class="h1" id="h1">Engenheiro de Software, web designer</h1>
 
-  <nav class="list" aria-label="Seções">
-    <a href="#sobre" data-go="sobre"><span data-i18n="l0">Quem sou eu</span><span class="arr">↗</span></a>
-    <a href="#projetos" data-go="projetos"><span data-i18n="l1">arandu&amp;aritmatch</span><span class="arr">↗</span></a>
-    <a href="#experiencia" data-go="experiencia"><span data-i18n="l2">Acadêmico e profissional</span><span class="arr">↗</span></a>
-    <a href="#contato" data-go="contato"><span data-i18n="l3">Emails e social</span><span class="arr">↗</span></a>
-  </nav>
-
-  <div class="sig lupa">
-    <div class="sig-layer blurred">
-      <div class="sig-mark" role="img" aria-label="Lucas Petter"></div>
-      <span class="copy">©</span>
+  <div class="hero-media" id="heroMedia">
+    <div class="hero-photo">
+      <img src="assets/minha-foto.svg" alt="Lucas Petter" draggable="false">
+      <span class="hero-eyes" aria-hidden="true"></span>
     </div>
-    <div class="sig-layer lens" aria-hidden="true">
-      <div class="sig-mark"></div>
-      <span class="copy">©</span>
-    </div>
+    <img class="hero-sig" src="assets/assinatura-rosa.svg" alt="" draggable="false">
   </div>
+
+  <svg class="hero-arrow" viewBox="0 0 355 129" fill="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="heroArrowGrad" x1="135.75" y1="9.24647" x2="246.5" y2="105.246" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#FF00DD"/>
+        <stop offset="1" stop-color="#FFEE00"/>
+      </linearGradient>
+    </defs>
+    <path class="arrow-body" pathLength="1" d="M4 9.24647C4.66667 47.0798 19.7783 124.746 100.5 124.746C230.5 124.746 196 -21.2535 348.466 45.4426" stroke="url(#heroArrowGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path class="arrow-head" pathLength="1" d="M291.851 72.2199L348.466 45.4426L313.259 4.00006" stroke="url(#heroArrowGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
 
   <section id="sobre" class="sobre" aria-label="Sobre">
     <article class="panel rosa" tabindex="0">

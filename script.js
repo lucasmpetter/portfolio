@@ -2,7 +2,7 @@
   const T = {
     pt: {
       n0: 'Sobre', n1: 'Projetos', n2: 'Experiência', n3: 'Contato',
-      h1: 'Web design, landing pages, e engenheiro de software',
+      h1: ['Engenheiro', 'de Software,', 'web designer'],
       l0: 'Quem sou eu', l1: 'arandu&aritmatch', l2: 'Acadêmico e profissional', l3: 'Emails e social',
       soon: 'Em breve', up: 'Voltar ao início', hint: 'Toque num card para puxá-lo',
       theme: 'Tema', themes: { escuro: 'Escuro', claro: 'Claro', amarelo: 'Amarelo', magenta: 'Magenta', azul: 'Azul' },
@@ -15,7 +15,7 @@
     },
     en: {
       n0: 'About', n1: 'Projects', n2: 'Experience', n3: 'Contact',
-      h1: 'Web design, landing pages, and software engineer',
+      h1: ['Software', 'Engineer,', 'web designer'],
       l0: 'Who I am', l1: 'arandu&aritmatch', l2: 'Academic and professional', l3: 'Emails and social',
       soon: 'Coming soon', up: 'Back to top', hint: 'Tap a card to pull it',
       theme: 'Theme', themes: { escuro: 'Dark', claro: 'Light', amarelo: 'Yellow', magenta: 'Magenta', azul: 'Blue' },
@@ -72,9 +72,12 @@
 
   // ---------- Language ----------
   let scrTimers = {};
+  // The title is a list of lines; every word is its own span so it can scramble on hover.
+  const h1Words = () => T[lang].h1.flatMap(line => line.split(' '));
   function renderH1() {
-    const words = T[lang].h1.split(' ');
-    $('#h1').innerHTML = words.map((w, i) => `<span data-w="${i}">${esc(w)}</span>${i < words.length - 1 ? ' ' : ''}`).join('');
+    let i = 0;
+    $('#h1').innerHTML = T[lang].h1.map(line =>
+      `<span class="line">${line.split(' ').map(w => `<span data-w="${i++}">${esc(w)}</span>`).join(' ')}</span>`).join('');
   }
   function renderPanels() {
     $$('[data-panel]').forEach(p => {
@@ -124,7 +127,7 @@
     if (!span || reduce) return;
     const key = span.dataset.w;
     if (scrTimers[key]) return;
-    const word = T[lang].h1.split(' ')[+key];
+    const word = h1Words()[+key];
     const total = 16; let f = 0;
     scrTimers[key] = setInterval(() => {
       f++;

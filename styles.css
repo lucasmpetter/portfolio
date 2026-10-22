@@ -61,7 +61,7 @@ img { user-select: none; -webkit-user-drag: none; }
 .hdr {
   --ng: clamp(16px, 2.6vw, 36px);
   position: fixed; z-index: 60;
-  top: 16px; right: 5.5vw; left: auto;
+  top: 0; right: 5.5vw; left: auto;
   display: flex; align-items: center;
   gap: clamp(32px, 8.5vw, 120px);
   padding: 6px 0;
@@ -83,6 +83,9 @@ img { user-select: none; -webkit-user-drag: none; }
   border-color: var(--line);
 }
 .hdr-nav { display: flex; align-items: center; gap: var(--ng); }
+/* At the top of the page the header rides on the hero frame's top edge */
+.hdr:not(.pill) .hdr-nav,
+.hdr:not(.pill) .lang { background: var(--bg); padding: 0 14px; transition: background .5s ease; }
 .hdr-nav a { padding: 4px 0; white-space: nowrap; }
 .hdr-nav .cta { padding: 4px 8px; border-radius: 5px; background: var(--cta-bg); color: var(--cta-fg); transition: background .2s, color .2s; }
 .hdr-nav .cta:hover { background: var(--cta-hov-bg, var(--hov)); color: var(--cta-hov-fg, #FFFFFF); }
@@ -111,7 +114,13 @@ img { user-select: none; -webkit-user-drag: none; }
   position: relative;
   container-type: inline-size;
   width: 100%;
-  height: 252cqw;
+  /* The hero media panel runs to the bottom of the viewport; everything below
+     shifts by however much taller/shorter that makes the hero than the base layout. */
+  --hero-top: 18px;
+  --hero-end: max(100svh - 6px, 40cqw);
+  --shift: calc(var(--hero-end) - 51cqw);
+  /* + extra room on narrow desktops, where the footer is relatively taller */
+  height: calc(252cqw + var(--shift) + max(0px, 160px - 10cqw));
 }
 .stage.exp-open { z-index: 70; }
 .overlay {
@@ -123,21 +132,77 @@ img { user-select: none; -webkit-user-drag: none; }
 }
 .stage.exp-open .overlay { opacity: 1; pointer-events: auto; }
 
-.h1 {
-  position: absolute; left: 1.72cqw; top: 1.4cqw;
-  margin: 0; width: 40cqw;
-  font-family: var(--mono); font-weight: 400;
-  font-size: 3.05cqw; line-height: .86; letter-spacing: -.01em;
+.hdr-nav a:not(.cta):not(.up):hover { color: var(--accent); }
+
+/* ---------- Hero ----------
+   An outlined frame that fills the first screen. The header sits on its top
+   edge: before scrolling, the nav and PT/EN get the page background so they
+   "cut" the line, as in the design. */
+.hero-media {
+  position: absolute; left: .6cqw; right: .6cqw; top: var(--hero-top);
+  height: calc(var(--hero-end) - var(--hero-top));
+  box-sizing: border-box;
+  border: 1px solid var(--fg);
+  border-radius: 2.8cqw;
+  overflow: hidden;
+  transition: border-color .5s ease;
+}
+.hero-photo {
+  position: absolute; right: 0; bottom: 0;
+  /* 91% of the frame's height, but never wider than ~45% of it */
+  width: min(45cqw, calc((var(--hero-end) - var(--hero-top)) * .91 * 518 / 633));
+  aspect-ratio: 518 / 633;
+}
+.hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* Pink → orange glass bar over the eyes */
+.hero-eyes {
+  position: absolute; left: 33.2%; top: 32.7%; width: 62.9%; height: 15.1%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255,0,221,.65), rgba(255,170,30,.6));
+  pointer-events: none;
+}
+/* Signature stays pink in every theme */
+.hero-sig {
+  position: absolute; right: 3.1cqw; bottom: 2.4cqw; z-index: 1;
+  width: 9.2cqw; height: auto; display: block;
+  pointer-events: none;
 }
 
-.list {
-  position: absolute; left: 2.42cqw; top: 29.6cqw;
-  display: flex; flex-direction: column; gap: 2.5cqw;
-  font-size: max(.94cqw, 12px);
+.h1 {
+  position: absolute; left: 1.75cqw; top: calc(var(--hero-top) + .6cqw); z-index: 2;
+  margin: 0;
+  font-family: var(--sans); font-weight: 400;
+  font-size: 10.2cqw; line-height: .98; letter-spacing: -.02em;
 }
-.list a { display: flex; align-items: center; gap: 8px; }
-.hdr-nav a:not(.cta):not(.up):hover, .list a:hover { color: var(--accent); }
-.list .arr { font-size: 1.2em; line-height: 1; }
+.h1 .line { display: block; white-space: nowrap; }
+.h1 [data-w] { cursor: default; }
+
+/* Arrow: draws itself in, then keeps nudging toward the photo */
+.hero-arrow {
+  position: absolute; left: 28.7cqw; top: 34cqw; z-index: 2;
+  width: 28cqw; height: auto; overflow: visible;
+  animation: arrow-point 1.6s ease-in-out 1.4s infinite;
+}
+/* Hidden until its own draw starts, so the round caps don't show as dots */
+.hero-arrow path {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+}
+.hero-arrow .arrow-body { animation: arrow-draw 1s cubic-bezier(.65,0,.35,1) .2s forwards; }
+.hero-arrow .arrow-head { animation: arrow-draw .35s ease-out 1.15s forwards; }
+@keyframes arrow-draw {
+  from { stroke-dashoffset: 1; opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+@keyframes arrow-point {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(1.4cqw); }
+}
+
+/* The photo is a dark silhouette: on the dark theme it's flipped to light */
+:root:not([data-theme]) .hero-photo img,
+:root[data-theme="escuro"] .hero-photo img { filter: invert(1); }
 
 /* Lupa: blurred base + sharp clipped lens following the pointer */
 .lupa { --r: 0px; }
@@ -149,31 +214,9 @@ img { user-select: none; -webkit-user-drag: none; }
   transition: clip-path .25s ease-out;
 }
 
-.sig {
-  position: absolute; left: 33.2cqw; top: 20.6cqw;
-  width: 65.6cqw; aspect-ratio: 840 / 388;
-}
-.sig-layer { position: absolute; inset: 0; }
-.sig-layer.blurred { filter: blur(.75cqw); }
-/* Signature drawn as a mask so its color follows the theme (--sig) */
-.sig-mark {
-  position: absolute; left: 0; top: 7.5%; width: 96.8%;
-  aspect-ratio: 813 / 342;
-  background: var(--sig);
-  -webkit-mask: url(assets/assinatura-rosa.svg) center / contain no-repeat;
-  mask: url(assets/assinatura-rosa.svg) center / contain no-repeat;
-  transition: background .5s ease;
-}
-.sig .copy {
-  position: absolute; right: 0; top: 0;
-  color: var(--fg);
-  font-size: 13.5cqw; line-height: 1;
-  transform: scale(.5); transform-origin: top right;
-}
-
 /* ---------- Sobre: glass panels ---------- */
 .sobre {
-  position: absolute; left: 6.9cqw; top: 60.4cqw;
+  position: absolute; left: 6.9cqw; top: calc(60.4cqw + var(--shift));
   width: 88.4375cqw; height: 48.4375cqw;
 }
 .panel {
@@ -252,7 +295,7 @@ img { user-select: none; -webkit-user-drag: none; }
 .deck-hint { display: none; }
 
 /* ---------- Projetos: scroll-driven marquee rows ---------- */
-.projetos { position: absolute; left: 0; top: 116cqw; width: 100%; overflow: hidden; }
+.projetos { position: absolute; left: 0; top: calc(116cqw + var(--shift)); width: 100%; overflow: hidden; }
 .rows { display: flex; flex-direction: column; gap: 2cqw; }
 .row { display: flex; gap: 2cqw; will-change: transform; }
 .card {
@@ -277,7 +320,7 @@ a.card:hover { transform: scale(1.03); }
 .card.soon span { opacity: .4; }
 
 /* ---------- Experiência ---------- */
-.exp { position: absolute; left: 0; top: 198cqw; width: 100%; padding: 0 2.42cqw; box-sizing: border-box; }
+.exp { position: absolute; left: 0; top: calc(198cqw + var(--shift)); width: 100%; padding: 0 2.42cqw; box-sizing: border-box; }
 .exp-list { border-top: 1px solid var(--line); }
 .exp-row {
   display: grid;
@@ -355,11 +398,12 @@ a.card:hover { transform: scale(1.03); }
 /* ---------- Narrow: stacked layout ---------- */
 @media (max-width: 759px) {
   .stage { height: auto; }
-  .h1, .list, .sig, .sobre, .projetos, .exp, .foot { position: relative; left: auto; top: auto; bottom: auto; }
-  .h1 { margin: 84px 20px 0; width: auto; font-size: 30px; }
-  .list { margin: 32px 20px 0; gap: 14px; }
-  .sig { width: calc(100% - 40px); margin: 48px 20px 0; }
-  .sig-layer.blurred { filter: blur(3px); }
+  .h1, .hero-media, .sobre, .projetos, .exp, .foot { position: relative; left: auto; top: auto; bottom: auto; }
+  .h1 { margin: 84px 16px 0; font-size: 15vw; }
+  .hero-media { left: auto; right: auto; height: auto; aspect-ratio: 4 / 5; margin: 24px 8px 0; border-radius: 24px; }
+  .hero-photo { width: 82%; }
+  .hero-sig { width: 96px; right: 18px; bottom: 16px; }
+  .hero-arrow { display: none; }
   /* Header pill shrinks with the viewport so it never overflows */
   .hdr.pill {
     --ng: min(12px, 2.2vw);
@@ -403,4 +447,5 @@ a.card:hover { transform: scale(1.03); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; }
+  .hero-arrow, .hero-arrow path { animation: none; stroke-dashoffset: 0; opacity: 1; }
 }
