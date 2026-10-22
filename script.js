@@ -311,11 +311,15 @@
     loader.classList.add('reveal');
     const done = () => {
       if (!loader.isConnected) return;
-      document.documentElement.classList.remove('loading', 'revealing');
+      document.documentElement.classList.remove('loading', 'revealing', 'revealed');
       loader.remove();
     };
-    loader.addEventListener('animationend', done, { once: true });
-    setTimeout(done, 2000); // in case the animation never runs (animations disabled, etc.)
+    // CSS does the motion (see the inline <style> in index.html): the word fades,
+    // the ball grows until it covers the screen (ends at 1.15s), then the loader
+    // fades out over the hero (.45s) and is removed.
+    const BALL_DONE = reduce ? 200 : 1150, FADE = 450;
+    setTimeout(() => { loader.classList.add('out'); document.documentElement.classList.add('revealed'); }, BALL_DONE);
+    setTimeout(done, BALL_DONE + FADE + 50);
   }
   // n = how many words have been shown so far
   function nextHello(n) {
