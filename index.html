@@ -10,14 +10,14 @@
 <meta property="og:url" content="https://lucaspetter.com.br/">
 <link rel="canonical" href="https://lucaspetter.com.br/">
 <meta property="og:title" content="Lucas Petter">
-<meta property="og:description" content="Web design, landing pages e engenheiro de software.">
+<meta property="og:description" content="Engenheiro de Software, web designer.">
 <meta property="og:image" content="https://lucaspetter.com.br/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Lucas Petter — web design, landing pages e engenheiro de software">
+<meta property="og:image:alt" content="Lucas Petter — Engenheiro de Software, web designer">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Lucas Petter">
-<meta name="twitter:description" content="Web design, landing pages e engenheiro de software.">
+<meta name="twitter:description" content="Engenheiro de Software, web designer.">
 <meta name="twitter:image" content="https://lucaspetter.com.br/assets/og.png">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon.png" type="image/png">
@@ -26,8 +26,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<!-- The loading screen only exists when JS runs, so it can never get stuck on screen -->
+<script>document.documentElement.classList.add('loading');</script>
 </head>
 <body>
+<div class="loader" id="loader" aria-hidden="true"><span class="loader-word" id="loaderWord">Olá!</span></div>
 
 <header class="hdr" id="hdr">
   <nav class="hdr-nav" aria-label="Principal">
@@ -49,7 +52,7 @@
 
   <div class="hero-media" id="heroMedia">
     <div class="hero-photo">
-      <img src="assets/minha-foto.svg" alt="Lucas Petter" draggable="false">
+      <img src="assets/foto-silhueta.png" alt="Lucas Petter" draggable="false">
       <span class="eye eye-l" aria-hidden="true"><span class="pupil"></span></span>
       <span class="eye eye-r" aria-hidden="true"><span class="pupil"></span></span>
     </div>

@@ -288,4 +288,48 @@
   deckApply();
   updateHeader();
   onScroll();
+
+  // ---------- Loading screen ----------
+  // Cycles "Olá!" through languages until the page has loaded (and at least one
+  // full round has played), then opens the circle that reveals the hero.
+  const loader = $('#loader'), loaderWord = $('#loaderWord');
+  const HELLOS = ['Olá!', 'Hello!', '¡Hola!', 'Bonjour!', 'Ciao!', 'Hallo!', 'Привет!', 'こんにちは!', '안녕하세요!', 'مرحبا!', 'नमस्ते!'];
+  const MAX_WAIT = 6000;
+  // "Loaded" = window load AND web fonts ready, so nothing re-lays out after the reveal
+  let pageLoaded = false, revealed = false;
+  const windowLoaded = document.readyState === 'complete'
+    ? Promise.resolve()
+    : new Promise(r => window.addEventListener('load', r, { once: true }));
+  const pageReady = Promise.all([windowLoaded, document.fonts ? document.fonts.ready : null]);
+  pageReady.then(() => { pageLoaded = true; });
+  const startedAt = performance.now();
+
+  function reveal() {
+    if (revealed) return;
+    revealed = true;
+    document.documentElement.classList.add('revealing');
+    loader.classList.add('reveal');
+    const done = () => {
+      if (!loader.isConnected) return;
+      document.documentElement.classList.remove('loading', 'revealing');
+      loader.remove();
+    };
+    loader.addEventListener('animationend', done, { once: true });
+    setTimeout(done, 2000); // in case the animation never runs (animations disabled, etc.)
+  }
+  // n = how many words have been shown so far
+  function nextHello(n) {
+    if (revealed) return;
+    if ((n >= HELLOS.length && pageLoaded) || performance.now() - startedAt > MAX_WAIT) return reveal();
+    loaderWord.textContent = HELLOS[n % HELLOS.length];
+    // The first "Olá!" lingers; the rest flash by
+    setTimeout(() => nextHello(n + 1), n === 0 ? 750 : 170);
+  }
+  if (reduce) {
+    // Just "Olá!", then a fade as soon as the page is ready
+    setTimeout(() => pageReady.then(reveal), 500);
+    setTimeout(reveal, MAX_WAIT);
+  } else {
+    nextHello(0);
+  }
 })();
