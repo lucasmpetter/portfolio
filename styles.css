@@ -278,7 +278,7 @@ img { user-select: none; -webkit-user-drag: none; }
 }
 a.card { transition: transform .4s var(--ease); }
 a.card:hover { transform: scale(1.03); }
-.card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.card img, .card video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
 .card .tag {
   position: absolute; left: 10px; bottom: 10px;
   display: flex; gap: 6px; align-items: center;

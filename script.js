@@ -26,22 +26,26 @@
 
   // Hover preview per experience row: a video if set, otherwise an image, otherwise no preview.
   const EXP_MEDIA = [
-    { video: '', img: 'assets/proj-arandudf.png' },
-    { video: '', img: 'assets/proj-aritmatch.png' },
-    { video: '', img: '' },
+    { video: 'assets/proj-arandudf.mp4', img: 'assets/proj-arandudf.png' },
+    { video: 'assets/proj-aritmatch.mp4', img: 'assets/proj-aritmatch.png' },
+    { video: 'assets/proj-institutorosa.mp4', img: 'assets/proj-institutorosa.png' },
     { video: '', img: '' }
   ];
 
+  // video: the site scrolling top to bottom (1440x810 recorded, 960x540 H.264, muted).
+  // img is a still of the top of the page, shown while the video loads and when
+  // motion is reduced.
   const SITES = {
-    arandu: { href: 'https://arandudf.com.br', img: 'assets/proj-arandudf.png', label: 'arandudf.com.br' },
-    arit: { href: 'https://aritmatch.com.br', img: 'assets/proj-aritmatch.png', label: 'aritmatch.com.br' }
+    arandu: { href: 'https://arandudf.com.br', img: 'assets/proj-arandudf.png', video: 'assets/proj-arandudf.mp4', label: 'arandudf.com.br' },
+    arit: { href: 'https://aritmatch.com.br', img: 'assets/proj-aritmatch.png', video: 'assets/proj-aritmatch.mp4', label: 'aritmatch.com.br' },
+    rosa: { href: 'https://institutorosa.com', img: 'assets/proj-institutorosa.png', video: 'assets/proj-institutorosa.mp4', label: 'institutorosa.com' }
   };
   // Each row: direction, start offset (cqw), and cards (site key or null = placeholder)
   const ROWS = [
-    { dir: 1, ml: -6, cards: ['arandu', null, 'arit', null, 'arandu', null] },
-    { dir: -1, ml: -16, cards: [null, 'arit', null, 'arandu', null, 'arit'] },
-    { dir: 1, ml: -2, cards: ['arandu', null, 'arit', null, 'arandu', null] },
-    { dir: -1, ml: -12, cards: [null, 'arit', null, 'arandu', null, 'arit'] }
+    { dir: 1, ml: -6, cards: ['arandu', 'rosa', 'arit', null, 'arandu', null] },
+    { dir: -1, ml: -16, cards: [null, 'arit', 'rosa', 'arandu', null, 'arit'] },
+    { dir: 1, ml: -2, cards: ['arandu', null, 'arit', 'rosa', 'arandu', null] },
+    { dir: -1, ml: -12, cards: ['rosa', 'arit', null, 'arandu', null, 'arit'] }
   ];
 
   const $ = s => document.querySelector(s);
@@ -62,9 +66,24 @@
   rowsEl.innerHTML = ROWS.map((r, i) => `<div class="row" data-dir="${r.dir}" style="margin-left:${r.ml}cqw">${r.cards.map(k => {
     if (!k) return '<div class="card soon"><span data-i18n="soon">Em breve</span></div>';
     const s = SITES[k];
-    return `<a class="card" href="${s.href}" target="_blank" rel="noopener"><img src="${s.img}" alt="Página inicial de ${s.label}" loading="lazy"><span class="tag">${s.label} ↗</span></a>`;
+    const video = s.video ? `<video muted loop playsinline preload="none" poster="${s.img}" data-src="${s.video}" aria-hidden="true"></video>` : '';
+    return `<a class="card" href="${s.href}" target="_blank" rel="noopener"><img src="${s.img}" alt="Página inicial de ${s.label}" loading="lazy">${video}<span class="tag">${s.label} ↗</span></a>`;
   }).join('')}</div>`).join('');
   const rows = [...rowsEl.children];
+
+  // Card videos load and play only while the card is on screen. There are 16 cards but
+  // only 3 files, so each one downloads once; off-screen ones pause so a phone isn't
+  // decoding a dozen videos at once.
+  if (!reduce && 'IntersectionObserver' in window) {
+    const cardIO = new IntersectionObserver(entries => entries.forEach(e => {
+      const v = e.target;
+      if (e.isIntersecting) {
+        if (!v.src) v.src = v.dataset.src;
+        v.play().catch(() => {});
+      } else if (v.src) v.pause();
+    }), { rootMargin: '200px' });
+    rowsEl.querySelectorAll('video[data-src]').forEach(v => cardIO.observe(v));
+  }
 
   // ---------- Language ----------
   let scrTimers = {};
