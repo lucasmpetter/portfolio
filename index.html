@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lucas Petter</title>
-<meta name="description" content="Lucas de Moraes Petter — web design, landing pages e engenheiro de software. CTO & Co-founder da Arandu Intelligence Systems.">
-<meta name="theme-color" content="#F6F6F4">
+<meta name="description" content="Lucas Petter — engenheiro de software e web designer. CTO e sócio da Arandu Intelligence Systems, criador do Aritmatch. Desenho e desenvolvo sites para negócios.">
+<meta name="theme-color" content="#202020">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lucaspetter.com.br/">
 <link rel="canonical" href="https://lucaspetter.com.br/">
@@ -19,19 +19,21 @@
 <meta name="twitter:title" content="Lucas Petter">
 <meta name="twitter:description" content="Engenheiro de Software, web designer.">
 <meta name="twitter:image" content="https://lucaspetter.com.br/assets/og.png">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="assets/favicon.png" type="image/png">
-<link rel="apple-touch-icon" href="assets/favicon.png">
+<!-- The winged ox, symbol of Saint Luke: the same drawing as the contact section -->
+<link rel="icon" href="assets/touro.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Outfit is the site; Geist 400 only for the loading screen, as on the old site -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=Geist:wght@400&display=swap" rel="stylesheet">
 <!-- ?v= forces browsers to fetch new CSS/JS after each deploy (GitHub Pages caches for 10 min) -->
-<link rel="stylesheet" href="styles.css?v=20261027b">
+<link rel="stylesheet" href="styles.css?v=20261105c">
 <style>
-  /* Loading screen. Inline on purpose: it must work even if a stale styles.css
-     comes from cache. "Olá!" in several languages on #181818; when the page is
-     ready, a circular hole opens in the middle of it and grows until the whole
-     site shows through.
+  /* Loading screen, kept from the previous site. Inline on purpose: it must work
+     even if a stale styles.css comes from cache. "Olá!" in several languages on
+     #181818; when the page is ready, a circular hole opens in the middle of it and
+     grows until the whole site shows through.
      The hole is a clip-path polygon (the screen minus a 96-point circle) built in
      script.js and grown with a CSS transition between two polygons with the same
      points: it animates smoothly everywhere, iOS Safari included, without
@@ -40,7 +42,7 @@
   /* The root background also paints the reserved scrollbar gutter: dark while loading */
   html.loading { overflow: hidden; background: #181818; }
   /* Late in the reveal the gutter turns light, so it does not flip at the very end */
-  html.loading.gutter-light { background: #F6F6F4; }
+  html.loading.gutter-light { background: #FBFBFB; }
   html.loading .loader { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; background: #181818; }
   .loader-word { font-family: Geist, system-ui, sans-serif; font-weight: 400; font-size: clamp(26px, 2.8vw, 42px); line-height: 1; letter-spacing: -.01em; color: #FFFFFF; transition: opacity .2s ease; }
   .loader.reveal .loader-word { opacity: 0; }
@@ -58,6 +60,7 @@
     if (h.classList.contains("loading") && !h.classList.contains("revealing")) {
       h.classList.remove("loading");
       if (l) l.remove();
+      document.dispatchEvent(new Event("site:revealed"));
     }
   }, 9000);
 </script>
@@ -65,85 +68,157 @@
 <body>
 <div class="loader" id="loader" aria-hidden="true"><span class="loader-word" id="loaderWord">Olá!</span></div>
 
-<header class="hdr" id="hdr">
-  <nav class="hdr-nav" aria-label="Principal">
-    <a href="#" class="up" id="up" aria-label="Voltar ao início" tabindex="-1">↑</a>
-    <a href="#sobre" data-go="sobre" data-i18n="n0">Sobre</a>
-    <a href="#projetos" data-go="projetos" data-i18n="n1">Projetos</a>
-    <a href="#experiencia" data-go="experiencia" data-i18n="n2">Experiência</a>
-    <a href="#contato" data-go="contato" class="cta" data-i18n="n3">Contato</a>
-  </nav>
-  <button class="lang" id="lang" type="button" aria-label="Mudar idioma / Change language">
-    <span data-lang="pt">PT</span><span>/</span><span data-lang="en">EN</span>
-  </button>
-</header>
+<div class="site" id="site">
 
-<main class="stage" id="stage">
-  <div class="overlay" id="overlay"></div>
-
-  <h1 class="h1" id="h1">Engenheiro de Software, web designer</h1>
-
-  <div class="hero-media" id="heroMedia">
-    <div class="hero-photo">
-      <img src="assets/foto-silhueta.png" alt="Lucas Petter" draggable="false">
-      <span class="eye eye-l" aria-hidden="true"><span class="pupil"></span></span>
-      <span class="eye eye-r" aria-hidden="true"><span class="pupil"></span></span>
+<nav class="nav" id="nav" aria-label="Principal">
+  <div class="nav-bar">
+    <button class="nav-logo" data-fill data-top aria-label="Lucas Petter, voltar ao topo"></button>
+    <div class="nav-links">
+      <button class="nav-link" data-link data-go="1" data-i18n="nav0">Destaques</button>
+      <button class="nav-link" data-link data-go="2" data-i18n="nav1">Sobre</button>
+      <button class="nav-link" data-link data-go="3" data-i18n="nav2">Serviços</button>
+      <button class="nav-link" data-link data-go="6" data-i18n="nav3">Contato</button>
     </div>
-    <img class="hero-sig" src="assets/assinatura-rosa.svg" alt="" draggable="false">
+    <div class="nav-right">
+      <div class="lang">
+        <button class="lang-btn" id="langBtn" type="button" aria-label="Idioma / Language" aria-haspopup="true" aria-expanded="false"><span id="langCode">PT</span><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="#FBFBFB" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="lang-menu" id="langMenu" role="menu" hidden>
+          <button role="menuitemradio" data-lang="pt">Português<span></span></button>
+          <button role="menuitemradio" data-lang="en">English<span></span></button>
+          <button role="menuitemradio" data-lang="zh">中文<span></span></button>
+        </div>
+      </div>
+      <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+    </div>
   </div>
-
-  <svg class="hero-arrow" viewBox="0 0 355 129" fill="none" aria-hidden="true">
-    <defs>
-      <linearGradient id="heroArrowGrad" x1="135.75" y1="9.24647" x2="246.5" y2="105.246" gradientUnits="userSpaceOnUse">
-        <stop stop-color="#FF00DD"/>
-        <stop offset="1" stop-color="#FFEE00"/>
-      </linearGradient>
-    </defs>
-    <path class="arrow-body" pathLength="1" d="M4 9.24647C4.66667 47.0798 19.7783 124.746 100.5 124.746C230.5 124.746 196 -21.2535 348.466 45.4426" stroke="url(#heroArrowGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-    <path class="arrow-head" pathLength="1" d="M291.851 72.2199L348.466 45.4426L313.259 4.00006" stroke="url(#heroArrowGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-
-  <section id="sobre" class="sobre" aria-label="Sobre">
-    <article class="panel rosa" tabindex="0">
-      <img src="assets/imagem-rosa.png" alt="" draggable="false">
-      <p data-panel="1"></p>
-    </article>
-    <article class="panel amarela" tabindex="0">
-      <img src="assets/imagem-amarela.png" alt="" draggable="false">
-      <p data-panel="2"></p>
-    </article>
-    <article class="panel azul" tabindex="0">
-      <img src="assets/imagem-azul.png" alt="" draggable="false">
-      <p data-panel="0"></p>
-    </article>
-  </section>
-  <p class="deck-hint" data-i18n="hint">Toque num card para puxá-lo</p>
-
-  <section id="projetos" class="projetos" aria-label="Projetos">
-    <div class="rows" id="rows"></div>
-  </section>
-
-  <section id="experiencia" class="exp" aria-label="Experiência">
-    <div class="exp-list" id="expList"></div>
-  </section>
-
-  <footer id="contato" class="foot">
-    <div class="foot-name lupa">
-      <div class="blurred">© Lucas Petter</div>
-      <div class="lens" aria-hidden="true">© Lucas Petter</div>
+  <div class="menu" id="menu">
+    <div class="menu-inner">
+      <button class="menu-link" data-link data-go="1" data-i18n="nav0">Destaques</button>
+      <button class="menu-link" data-link data-go="2" data-i18n="nav1">Sobre</button>
+      <button class="menu-link" data-link data-go="3" data-i18n="nav2">Serviços</button>
+      <button class="menu-link" data-link data-go="6" data-i18n="nav3">Contato</button>
     </div>
-    <div class="social">
-      <div class="social-title">Social</div>
-      <a href="https://instagram.com/lucasmpetter" target="_blank" rel="noopener"><span class="ico ig"><span></span></span><span>@lucasmpetter</span></a>
-      <a href="https://x.com/lucasmpetter" target="_blank" rel="noopener"><span class="ico x">X</span><span>@lucasmpetter</span></a>
-      <a href="mailto:lucas.petter@arandudf.com.br"><span class="ico">✉</span><span>lucas.petter@arandudf.com.br</span></a>
-      <a href="mailto:lucasdemoraespetter@gmail.com"><span class="ico">✉</span><span>lucasdemoraespetter@gmail.com</span></a>
+  </div>
+</nav>
+
+<main class="main">
+
+<section class="hero" data-sec="0">
+  <div class="hero-role" data-reveal="0" data-i18n="role">Engenheiro de Software · Web Designer</div>
+  <h1 class="hero-title" data-reveal="60">Lucas Petter.</h1>
+  <p class="hero-line" data-reveal="120" data-i18n="heroLine">CTO e sócio da Arandu Intelligence Systems, criador do Aritmatch. Desenho e desenvolvo sites para negócios.</p>
+  <div class="hero-ctas" data-reveal="180">
+    <button class="btn btn-dark" data-fill data-touch="dark" data-go="1" data-i18n="seeWork">Ver trabalhos</button>
+    <button class="btn btn-outline" data-fill data-go="6" data-i18n="contact">Fale comigo</button>
+  </div>
+  <img class="deco deco-lamp" src="assets/luminaria-verde.webp" alt="" draggable="false">
+  <img class="deco deco-pl" src="assets/planta-esquerda.webp" alt="" draggable="false">
+  <img class="deco deco-pl-leaves" src="assets/planta-esquerda-folhas.webp" alt="" draggable="false">
+  <img class="deco deco-pr" src="assets/planta-direita.webp" alt="" draggable="false">
+</section>
+
+<section class="ventures" data-sec="1">
+  <div class="venture venture-dark" data-reveal="0">
+    <div class="venture-role" data-i18n="aranduRole">Sócio &amp; CTO</div>
+    <div class="venture-name">Arandu</div>
+    <div class="venture-desc" data-i18n="aranduDesc">Arquitetura, produto e engenharia em uma empresa de sistemas inteligentes.</div>
+    <a class="venture-visit" data-fill href="https://arandudf.com.br" target="_blank" rel="noopener"><span data-i18n="visit">Visitar site</span> ›</a>
+    <div class="mock-display">
+      <div class="mockfit" data-mockfit="2000">
+        <div class="display-shadow"></div>
+        <img class="display-frame" src="assets/display-mockup.webp" alt="" draggable="false">
+        <div class="display-screen">
+          <div class="screen-clip"><div class="autoscroll" data-autoscroll="4"><img src="assets/shot-arandu-desktop.webp" alt="Página inicial de arandudf.com.br no computador" loading="lazy"></div></div>
+          <div class="screen-glare"></div>
+        </div>
+      </div>
+      <div class="phone">
+        <div class="phone-body">
+          <div class="phone-screen"><div class="screen-clip"><div class="autoscroll" data-autoscroll="5"><img src="assets/shot-arandu-mobile.webp" alt="Página inicial de arandudf.com.br no celular" loading="lazy"></div></div>
+            <div class="phone-island"></div>
+          </div>
+        </div>
+      </div>
     </div>
-  </footer>
+  </div>
+  <div class="venture venture-light" data-reveal="100">
+    <div class="venture-role" data-i18n="aritRole">Criador</div>
+    <div class="venture-name">Aritmatch</div>
+    <div class="venture-desc" data-i18n="aritDesc">Um produto idealizado e desenvolvido do conceito ao código.</div>
+    <a class="venture-visit" data-fill href="https://aritmatch.com.br" target="_blank" rel="noopener"><span data-i18n="visit">Visitar site</span> ›</a>
+    <div class="mock-laptop">
+      <div class="mockfit" data-mockfit="1200" data-cx="600" data-cy="830">
+        <div class="laptop-screen">
+          <div class="screen-clip"><div class="autoscroll" data-autoscroll="2.1875"><img src="assets/shot-aritmatch-desktop.webp" alt="Página inicial de aritmatch.com.br" loading="lazy"></div></div>
+        </div>
+        <img class="laptop-frame" src="assets/laptop-mockup-2.webp" alt="" draggable="false">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="works" aria-label="Sites">
+  <div class="works-viewport">
+    <div class="works-track" id="worksTrack"></div>
+  </div>
+  <div class="works-dots" id="worksDots"></div>
+</section>
+
+<section class="about" data-sec="2">
+  <h2 data-reveal="0" data-i18n="about">Engenharia com precisão. Design com intenção.</h2>
+  <p data-reveal="80" data-i18n="aboutP1">Sou Lucas Petter, formando em Engenharia de Software.</p>
+</section>
+
+<section class="services" data-sec="3">
+  <div class="services-head">
+    <h2 data-reveal="0" data-i18n="serv">Web design para negócios.</h2>
+    <p data-reveal="60" data-i18n="servNote">Do primeiro rascunho ao site no ar.</p>
+  </div>
+  <div class="services-grid" id="services"></div>
+  <a class="services-quote" data-fill data-touch="dark" data-reveal="0" href="mailto:lucas.petter@arandudf.com.br"><span data-i18n="quote">Solicitar orçamento</span> ›</a>
+</section>
+
+<section class="stack-row" data-sec="4">
+  <div class="stack" data-reveal="0">
+    <h3 data-i18n="stack">Ferramentas do dia a dia.</h3>
+    <div class="stack-list" id="stackList"></div>
+  </div>
+  <div class="degree" data-sec="5" data-reveal="100">
+    <div class="degree-status" data-i18n="status">Em conclusão</div>
+    <h3 data-i18n="degree">Engenharia de Software.</h3>
+    <div class="degree-inst"><span data-i18n="inst">UNICEPLAC</span> · <span data-i18n="period">Desde 2024</span></div>
+  </div>
+</section>
+
+<section class="contact" data-sec="6">
+  <h2 data-reveal="0" data-i18n="cta">Vamos construir algo.</h2>
+  <p data-reveal="60" data-i18n="ctaNote">Projetos, parcerias ou uma conversa sobre produto.</p>
+  <a class="contact-mail" data-fill data-touch="light" data-reveal="120" href="mailto:lucas.petter@arandudf.com.br">lucas.petter@arandudf.com.br</a>
+  <div class="contact-links" data-reveal="180">
+    <a data-link href="https://instagram.com/lucasmpetter" target="_blank" rel="noopener">Instagram ›</a>
+    <a data-link href="https://x.com/lucasmpetter" target="_blank" rel="noopener">X ›</a>
+    <a data-link href="https://github.com/lucasmpetter" target="_blank" rel="noopener">GitHub ›</a>
+    <a data-link href="mailto:lucasdemoraespetter@gmail.com"><span data-i18n="mail">Email pessoal</span> ›</a>
+  </div>
+  <div class="bull-wrap" data-reveal="240">
+    <div class="bull" id="bull" data-fill role="img" data-i18n-label="bull" aria-label="Touro alado, símbolo de São Lucas, o Evangelista"></div>
+    <div class="bull-caption" id="bullCaption" data-i18n="bull">Touro alado, símbolo de São Lucas, o Evangelista</div>
+  </div>
+</section>
+
 </main>
 
-<div class="preview" id="preview" aria-hidden="true"><div class="preview-box" id="previewBox"></div></div>
+<div class="sbar" id="sbar" aria-hidden="true"><div class="sbar-fill" id="sbarFill"></div></div>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
 
-<script src="script.js?v=20261027b"></script>
+<footer class="footer">
+  <div>© 2026 Lucas Petter</div>
+  <div data-i18n="made">Desenhado e desenvolvido por Lucas Petter</div>
+  <button class="footer-top" data-fill data-top><span data-i18n="top">Voltar ao topo</span> ↑</button>
+</footer>
+
+</div>
+
+<script src="script.js?v=20261105c"></script>
 </body>
 </html>
