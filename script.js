@@ -60,35 +60,25 @@
   };
   const LANG_CODE = { pt: 'PT', en: 'EN', zh: '中文' };
   const HTML_LANG = { pt: 'pt-BR', en: 'en', zh: 'zh-CN' };
-  const STACK = ['TypeScript', 'React', 'Next.js', 'Node.js', 'Python', 'PostgreSQL', 'Docker', 'Figma', 'Design systems'];
-  // The sites in the carousel, with the share card (Open Graph) each one publishes
-  const WORKS = [
-    { title: 'Arandu Intelligence Systems', url: 'https://arandudf.com.br', img: 'assets/og-arandu.webp' },
-    { title: 'Aritmatch', url: 'https://aritmatch.com.br', img: 'assets/og-aritmatch.webp' },
-    { title: 'Instituto Rosa', url: 'https://institutorosa.com', img: 'assets/og-institutorosa.webp' }
-  ];
 
   let lang = 'pt';
   try { const saved = localStorage.getItem('lp-lang'); if (COPY[saved]) lang = saved; } catch (e) {}
 
-  // ---------- Static lists ----------
-  $('#stackList').innerHTML = STACK.map(s => `<div>${s}</div>`).join('');
-  const track = $('#worksTrack'), dots = $('#worksDots');
-  track.innerHTML = WORKS.map((w, i) => `
-    <a class="work" href="${w.url}" target="_blank" rel="noopener" data-work="${i}">
-      <div class="work-card">
-        <img src="${w.img}" alt="" loading="lazy">
-        <div class="work-bar"><span class="work-title">${w.title}</span><span class="work-access" data-fill data-fill-color="#202020" data-fill-ink="#FBFBFB" data-i18n="access">Acessar</span></div>
-      </div>
-    </a>`).join('');
-  dots.innerHTML = WORKS.map((w, i) => `<button class="works-dot" data-dot="${i}" aria-label="${w.title}"><span></span></button>`).join('');
+  // ---------- Lists ----------
+  // The carousel, the toolkit and the services are written in index.html (in
+  // Portuguese) so search engines read them without running this script. Only
+  // the services change with the language; the rest reads the same in all three.
+  const track = $('#worksTrack');
+  let servicesLang = 'pt'; // the language index.html was written in
 
   function renderServices() {
+    if (lang === servicesLang) return;
+    servicesLang = lang;
     $('#services').innerHTML = COPY[lang].services.map((s, i) => `
       <div class="service" data-fill${reduce ? '' : ` data-reveal="${(i % 2) * 100}"`}>
         <div class="service-n">${String(i + 1).padStart(2, '0')}</div>
-        <div class="service-t">${s[0]}</div>
-        <div class="service-d">${s[1]}</div>
+        <h3 class="service-t">${s[0].replace(/&/g, '&amp;')}</h3>
+        <p class="service-d">${s[1]}</p>
       </div>`).join('');
   }
 
@@ -221,7 +211,7 @@
     cLast = now;
     const p = Math.min(1, (now - cStart) / 5000);
     dotEls[cIdx].firstChild.style.width = (p * 100) + '%';
-    if (p >= 1) showWork((cIdx + 1) % WORKS.length);
+    if (p >= 1) showWork((cIdx + 1) % works.length);
   }
 
   // ---------- Scroll bar ----------

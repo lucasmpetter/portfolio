@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://lucaspetter.com.br/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <image:image><image:loc>https://lucaspetter.com.br/assets/og.png</image:loc></image:image>
+    <image:image><image:loc>https://lucaspetter.com.br/assets/shot-arandu-desktop.webp</image:loc></image:image>
+    <image:image><image:loc>https://lucaspetter.com.br/assets/shot-arandu-mobile.webp</image:loc></image:image>
+    <image:image><image:loc>https://lucaspetter.com.br/assets/shot-aritmatch-desktop.webp</image:loc></image:image>
+    <image:image><image:loc>https://lucaspetter.com.br/assets/og-arandu.webp</image:loc></image:image>
+    <image:image><image:loc>https://lucaspetter.com.br/assets/og-aritmatch.webp</image:loc></image:image>
+    <image:image><image:loc>https://lucaspetter.com.br/assets/og-institutorosa.webp</image:loc></image:image>
+  </url>
+</urlset>

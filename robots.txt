@@ -1,0 +1,5 @@
+# lucaspetter.com.br — tudo pode ser rastreado.
+User-agent: *
+Allow: /
+
+Sitemap: https://lucaspetter.com.br/sitemap.xml

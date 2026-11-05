@@ -207,8 +207,8 @@ button { font-family: inherit; }
 }
 .service { background: #f0f0f0; padding: 44px 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .service-n { font-size: 15px; font-weight: 500; }
-.service-t { font-size: 26px; font-weight: 600; letter-spacing: -.015em; }
-.service-d { max-width: 360px; font-size: 17px; line-height: 1.5; color: var(--muted); }
+.service-t { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -.015em; }
+.service-d { margin: 0; max-width: 360px; font-size: 17px; line-height: 1.5; color: var(--muted); }
 .services-quote { font-size: 19px; font-weight: 500; padding: 14px 26px; border-radius: 999px; }
 
 /* ---------- Stack + degree ---------- */
